@@ -54,12 +54,16 @@ client.on('interactionCreate', async interaction => {
 
 		for (const train of Object.values(trains)) {
 		  const rawName = train?.Name?.value;
-		  let name = '';
+		let name = '';
+		if (typeof rawName === 'string') {//Create 5 train names
 		  try {
-			name = JSON.parse(rawName)?.text || '';
+			const parsed = JSON.parse(rawName);
+			name = typeof parsed?.text === 'string' ? parsed.text : rawName;
 		  } catch {
-			name = rawName;
+			name = rawName; // Create 6 train names
 		  }
+		}
+
 			//derail
 		  if (name && name.toLowerCase().includes(searchParam)) {
 			const derailedRaw = train?.Derailed?.value ?? 0;

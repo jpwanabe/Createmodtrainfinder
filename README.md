@@ -5,7 +5,7 @@ Create mod train locator discord bot
 
 This is a bot I made to detect some info about create trains and their current status!
 
-Using this bot you can locate where your train is in the world, the diemenstion, it's speed, if it is in a deadlock(not moving but navigating), if it has derailed, and if it is schedule or in maunal mode.
+Using this bot you can locate where your train is in the world, the dimension, it's speed, if it is in a deadlock(not moving but navigating), if it has derailed, and if it is schedule or in manual mode.
 
 It also has a catch if you search a train that is not found or if you search something that has too many results.
 

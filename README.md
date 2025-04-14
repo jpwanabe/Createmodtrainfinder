@@ -24,4 +24,4 @@ They are
 
 as outlined in the pacakge.json.
 
-Feel free to reach out to meif you have any suggestions on discord if you have suggestions or need help. 
+Feel free to reach out to me if you have any suggestions on discord if you have suggestions or need help. 

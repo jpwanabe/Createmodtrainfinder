@@ -1,0 +1,11 @@
+{
+  "botToken": "Bot token here",
+  "clientId": "Bot client Id here",
+  "ftp": {
+    "host": "FTP url",
+    "user": "FTP username",
+    "password": "FTP password",
+    "secure": false,
+    "remoteFilePath": "Path to create_tracks.dat. Most of the time ends with */world/data/create_tracks.dat*"
+  }
+}

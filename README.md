@@ -12,6 +12,10 @@ It also has a catch if you search a train that is not found or if you search som
 ![image](https://github.com/user-attachments/assets/ff63b7c9-c2b4-4baa-920d-2b669204f9d1)
 
 
+![image](https://github.com/user-attachments/assets/f59221bc-6b46-4c14-8aed-af15ec7785f0)
+
+
+There is the /findtrain command and the /derailed command
 
 This bot uses FTP to get the current version of the create_tracks.dat file to find out where trains were when the file was last save(every 5 min or so). So this is not 100% accurate for moving trains.
 

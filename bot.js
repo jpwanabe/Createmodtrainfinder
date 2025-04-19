@@ -25,6 +25,12 @@ const commands = [
 	new SlashCommandBuilder()
     .setName('derailed')
     .setDescription('List all derailed trains in the world.')
+    .toJSON(),
+	
+	
+  new SlashCommandBuilder()
+    .setName('deadlock')
+    .setDescription('List all trains currently stuck waiting for a signal (deadlocked).')
     .toJSON()
 ];
 
@@ -99,7 +105,7 @@ client.on('interactionCreate', async interaction => {
 			let deadlock = 'No';
 			try {
 			  const ticks = train?.Navigation?.value?.TicksWaitingForSignal?.value;
-			  if (typeof ticks === 'number' && ticks > 500) {
+			  if (typeof ticks === 'number' && ticks > 1200) {
 				deadlock = 'Yes';
 			  }
 			} catch {
@@ -276,7 +282,92 @@ embed.addFields({
   }
 }
 
-  
+  if (interaction.commandName === 'deadlock') {
+  try {
+    await interaction.deferReply();
+
+    const filePath = await downloadNBTFile();
+    const nbtData = await parseNBTFile(filePath);
+    const trains = nbtData.value?.data?.value?.Trains?.value?.value || {};
+
+    const deadlockedTrains = [];
+
+    for (const train of Object.values(trains)) {
+      const rawName = train?.Name?.value;
+      let name = '';
+      try {
+        const parsed = JSON.parse(rawName);
+        name = typeof parsed?.text === 'string' ? parsed.text : rawName;
+      } catch {
+        name = rawName;
+      }
+
+      const ticks = train?.Navigation?.value?.TicksWaitingForSignal?.value;
+      const isDeadlocked = typeof ticks === 'number' && ticks > 1200;
+      if (!isDeadlocked) continue;
+
+      // 📍 Position
+      let position = 'N/A';
+      const posList = train?.Carriages?.value?.value?.[0]?.Entity?.value?.Pos?.value?.value;
+      if (Array.isArray(posList) && posList.length === 3) {
+        const [x, y, z] = posList.map(n => Math.round(n));
+        position = `${x} ${y} ${z}`;
+      }
+
+      // 🌍 Dimension
+      let dimId;
+      try {
+        const carriage = train?.Carriages?.value?.value?.[0];
+        const positioningList = carriage?.EntityPositioning?.value?.value;
+        const firstEntry = positioningList?.[0];
+        dimId = firstEntry?.Dim?.value;
+      } catch {
+        dimId = undefined;
+      }
+
+      const dimension = {
+        0: 'Overworld',
+        [-1]: 'The End',
+        1: 'Nether'
+      }[dimId] || (dimId !== undefined ? `Unknown (${dimId})` : 'N/A');
+
+      deadlockedTrains.push({ name, position, dimension });
+    }
+
+    if (deadlockedTrains.length === 0) {
+      return await interaction.editReply('✅ No trains are currently in a deadlock state.');
+    }
+
+    const chunks = [];
+    for (let i = 0; i < deadlockedTrains.length; i += 10) {
+      chunks.push(deadlockedTrains.slice(i, i + 10));
+    }
+
+    const embeds = chunks.map((group, i) => {
+      const embed = new EmbedBuilder()
+        .setTitle(`🚦 Deadlocked Trains (${i * 10 + 1}–${i * 10 + group.length} of ${deadlockedTrains.length})`)
+        .setColor(0xFF8800);
+
+      for (const train of group) {
+        embed.addFields({
+          name: train.name || 'Unnamed Train',
+          value: `📍 Position: \`${train.position}\`\n🌎 Dimension: \`${train.dimension}\``
+        });
+      }
+
+      return embed;
+    });
+
+    await interaction.editReply({ embeds });
+
+  } catch (err) {
+    console.error("❌ Error handling /deadlock:", err);
+    try {
+      await interaction.editReply('❌ An error occurred while processing the request.');
+    } catch {}
+  }
+}
+
   
 });
 

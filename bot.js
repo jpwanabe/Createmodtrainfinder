@@ -105,7 +105,7 @@ client.on('interactionCreate', async interaction => {
 			let deadlock = 'No';
 			try {
 			  const ticks = train?.Navigation?.value?.TicksWaitingForSignal?.value;
-			  if (typeof ticks === 'number' && ticks > 1200) {
+			  if (typeof ticks === 'number' && ticks > 500) {
 				deadlock = 'Yes';
 			  }
 			} catch {
@@ -303,7 +303,7 @@ embed.addFields({
       }
 
       const ticks = train?.Navigation?.value?.TicksWaitingForSignal?.value;
-      const isDeadlocked = typeof ticks === 'number' && ticks > 1200;
+      const isDeadlocked = typeof ticks === 'number' && ticks > 500;
       if (!isDeadlocked) continue;
 
       // 📍 Position

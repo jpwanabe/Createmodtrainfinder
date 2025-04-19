@@ -4,7 +4,7 @@ const nbt = require('prismarine-nbt');
 const path = require('path');
 const config = require('./config.json');
 
-const NBT_FILE_PATH = path.join(__dirname, '..', 'create_tracks.dat');
+const NBT_FILE_PATH = path.join(__dirname, 'create_tracks.dat');
 const MAX_FILE_AGE_MS = 5 * 60 * 1000; 
 
 async function downloadNBTFile() {
